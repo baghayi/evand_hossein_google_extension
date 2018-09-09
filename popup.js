@@ -1,11 +1,16 @@
 'use strict';
 
-function updateEventId(uri) {
+function updateEventId (event) {
+    let changeColor = document.getElementById('event-id');
+    changeColor.innerHTML = event.id; 
+}
+
+function gerEventData(uri) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function(){
         if (xhr.readyState == 4) {
-            let changeColor = document.getElementById('event-id');
-            changeColor.innerHTML = JSON.parse(xhr.responseText).data.id; 
+            const event = JSON.parse(xhr.responseText).data;
+            updateEventId(event);
         }
     };
 
@@ -20,7 +25,7 @@ chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
     let eventApiUri = 'https://api.evand.com';
     eventApiUri += parser.pathname + '?fields=id';
 
-    updateEventId(eventApiUri);
+    gerEventData(eventApiUri);
 });
 
 
