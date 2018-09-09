@@ -1,8 +1,13 @@
 'use strict';
 
 function updateEventId (event) {
-    let changeColor = document.getElementById('event-id');
-    changeColor.innerHTML = event.id; 
+    let element = document.getElementById('event-id');
+    element.innerHTML = event.id; 
+}
+
+function hasActiveWebinar (event) {
+    let element = document.getElementById('has-active-webinar');
+    element.innerHTML = event._links.webinar == null ? 'No' : 'Yay';
 }
 
 function gerEventData(uri) {
@@ -11,6 +16,7 @@ function gerEventData(uri) {
         if (xhr.readyState == 4) {
             const event = JSON.parse(xhr.responseText).data;
             updateEventId(event);
+            hasActiveWebinar(event);
         }
     };
 
@@ -23,7 +29,7 @@ chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
     parser.href = tabs[0].url;
 
     let eventApiUri = 'https://api.evand.com';
-    eventApiUri += parser.pathname + '?fields=id';
+    eventApiUri += parser.pathname + '?links=webinar';
 
     gerEventData(eventApiUri);
 });
