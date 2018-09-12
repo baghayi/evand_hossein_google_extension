@@ -2,7 +2,7 @@
   "name": "Evand Hossein",
   "version": "1.0",
   "description": "This extension is supposed to make Hossein's life much much easier.",
-  "permissions": ["https://api.evand.com/", "tabs", "declarativeContent"],
+  "permissions": ["https://api.evand.com/", "tabs", "declarativeContent", "storage"],
   "background": {
     "scripts": ["background.js"],
     "persistent": false

@@ -8,12 +8,26 @@
       p > span {
           font-weight: bold;
       }
+
+      #content-screen {
+          display: none;
+      }
     </style>
   </head>
   <body>
-    <p>Event Id: <span id='event-id'>...</span></p>
-    <p>Has Active Webinar: <span id='has-active-webinar'>?</span></p>
-    <p>Has Connect-App: <span id='has-connect-app'>?</span></p>
+      <div id="login-screen">
+          <input id="login-email" type="text" name="email" placeholder="Email ..." required />
+          <input id="login-password" type="password" name="password" placeholder="Password ..." required />
+          <br />
+          <input type="button" id="login" value="Let's Dance">
+      </div>
+
+      <div id="content-screen">
+          <p>Event Id: <span id='event-id'>...</span></p>
+          <p>Has Active Webinar: <span id='has-active-webinar'>?</span></p>
+          <p>Has Connect-App: <span id='has-connect-app'>?</span></p>
+      </div>
+
     <script src="popup.js"></script>
   </body>
 </html>
