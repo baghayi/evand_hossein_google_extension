@@ -40,6 +40,7 @@ function run (jwt) {
         };
 
         xhr.open("GET", uri, true);
+        xhr.setRequestHeader("Authorization", jwt);
         xhr.send();
     }
 
