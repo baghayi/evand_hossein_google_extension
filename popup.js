@@ -27,7 +27,12 @@ function run (jwt) {
         element.innerHTML = event.connectApp && event.connectApp.data ? 'Yesssss' : 'Na';
     }
 
-    function gerEventData(uri) {
+    function updateAttendeeRelatedInfo (attendees) {
+        let element = document.getElementById('total-attendees');
+        element.innerHTML = attendees.meta.pagination.total;
+    }
+
+    function getEventData(uri) {
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function(){
             if (xhr.readyState == 4) {
@@ -44,6 +49,21 @@ function run (jwt) {
         xhr.send();
     }
 
+    function getEventAttendeesData (uri) {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function(){
+            if (xhr.readyState == 4) {
+                const attendees = JSON.parse(xhr.responseText);
+
+                updateAttendeeRelatedInfo(attendees);
+            }
+        };
+
+        xhr.open("GET", uri, true);
+        xhr.setRequestHeader("Authorization", jwt);
+        xhr.send();
+    }
+
     chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
         var parser = document.createElement('a');
         parser.href = tabs[0].url;
@@ -51,7 +71,11 @@ function run (jwt) {
         let eventApiUri = 'https://api.evand.com';
         eventApiUri += parser.pathname + '?links=webinar&include=connectApp';
 
-        gerEventData(eventApiUri);
+        let eventAttendeesApiUri = 'https://api.evand.com';
+        eventAttendeesApiUri += parser.pathname + '/attendees?per_page=1';
+
+        getEventData(eventApiUri);
+        getEventAttendeesData(eventAttendeesApiUri);
     });
 
     function hideLoginForm () {
