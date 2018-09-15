@@ -12,22 +12,26 @@ function run (jwt) {
         displayContent();
     }
 
-    function updateEventId (event) {
+    function updateEventId (e) {
+        const event = e.detail;
         let element = document.getElementById('event-id');
         element.innerHTML = event.id; 
     }
 
-    function hasActiveWebinar (event) {
+    function hasActiveWebinar (e) {
+        const event = e.detail;
         let element = document.getElementById('has-active-webinar');
         element.innerHTML = event._links.webinar == null ? 'No' : 'Yay';
     }
 
-    function hasConnectApp(event) {
+    function hasConnectApp(e) {
+        const event = e.detail;
         let element = document.getElementById('has-connect-app');
         element.innerHTML = event.connectApp && event.connectApp.data ? 'Yesssss' : 'Na';
     }
 
-    function isUsingShowtime (event) {
+    function isUsingShowtime (e) {
+        const event = e.detail;
         let element = document.getElementById('is-using-showtime');
         element.innerHTML = event.is_using_showtime ? 'Sure it does!' : 'No man';
     }
@@ -42,12 +46,10 @@ function run (jwt) {
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function(){
             if (xhr.readyState == 4) {
-                const event = JSON.parse(xhr.responseText).data;
-
-                updateEventId(event);
-                hasActiveWebinar(event);
-                hasConnectApp(event);
-                isUsingShowtime(event);
+                let e = new CustomEvent("ReceivedEventData", {
+                    detail: JSON.parse(xhr.responseText).data
+                });
+                document.dispatchEvent(e);
             }
         };
 
@@ -56,6 +58,11 @@ function run (jwt) {
         xhr.setRequestHeader("Authorization", jwt);
         xhr.send();
     }
+
+    document.addEventListener('ReceivedEventData', updateEventId);
+    document.addEventListener('ReceivedEventData', hasActiveWebinar);
+    document.addEventListener('ReceivedEventData', hasConnectApp);
+    document.addEventListener('ReceivedEventData', isUsingShowtime);
 
     function getEventStatistics (tabUri) {
         var xhr = new XMLHttpRequest();
