@@ -12,6 +12,21 @@
       #content-screen {
           display: none;
       }
+
+      p#event-finder-by-id {
+          margin-top: 15px;
+      }
+
+      p#event-finder-by-id span {
+          display: none;
+      }
+
+      #event-finder-by-id input {
+          width: 80px;
+          height: 1.2em;
+          padding: 5px;
+          margin-right: 5px;
+      }
     </style>
   </head>
   <body>
@@ -27,6 +42,12 @@
           <p>Has Active Webinar: <span id='has-active-webinar'>?</span></p>
           <p>Has Connect-App: <span id='has-connect-app'>?</span></p>
           <p>Total Attendees: <span id='total-attendees'>?</span> Of n</p>
+
+          <p id="event-finder-by-id">
+              <input type="number" placeholder="Event by id ..." />
+              <a target="_blank"></a>
+              <span></span>
+          </p>
       </div>
 
     <script src="popup.js"></script>
