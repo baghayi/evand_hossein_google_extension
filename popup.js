@@ -1,9 +1,12 @@
 import { searchingEventById } from './tasks/searchingEventById.js';
 import { EventFinder } from './services/EventFinder.js';
 import { Main } from './services/Main.js';
+import { AnswerEventQuestions } from './tasks/AnswerEventQuestions.js';
+import { AnswerEventStatisticQuestions } from './tasks/AnswerEventStatisticQuestions.js';
 
 const main = new Main();
 main.run(run);
+
 
 function run (jwt, tabUrl) {
     if(jwt) {
@@ -31,12 +34,6 @@ function run (jwt, tabUrl) {
         element.innerHTML = event.is_using_showtime ? 'Sure it does!' : 'No man';
     }
 
-    function updateAttendeeRelatedInfo (eventStatistics) {
-        document.getElementById('total-attendees').innerHTML = eventStatistics.attendees.all.count;
-        document.getElementById('total-tickets').innerHTML = eventStatistics.tickets.all.count;
-        document.getElementById('total-guest-attendees').innerHTML = eventStatistics.attendees.guest.count;
-    }
-
     function eventSlug(tabUrl) {
         let pieces = tabUrl.pathname.split("/");
         if(pieces.length >= 3 && pieces[1] === 'events') {
@@ -50,10 +47,8 @@ function run (jwt, tabUrl) {
     eventFinder
         .bySlug(eventSlug(tabUrl))
         .then(function(event){
-            updateEventId(event);
-            hasActiveWebinar(event);
-            hasConnectApp(event);
-            isUsingShowtime(event);
+            let questions = new AnswerEventQuestions();
+            document.getElementById('question-answers').innerHTML = questions.answer(event);
         })
         .catch(function(error){
             console.log('fuck', error);
@@ -64,7 +59,9 @@ function run (jwt, tabUrl) {
         xhr.onreadystatechange = function(){
             if (xhr.readyState == 4) {
                 const eventStatistics = JSON.parse(xhr.responseText);
-                updateAttendeeRelatedInfo(eventStatistics);
+
+                let questions = new AnswerEventStatisticQuestions();
+                document.getElementById('question-answers').innerHTML += questions.answer(eventStatistics);
             }
         };
 
@@ -74,8 +71,6 @@ function run (jwt, tabUrl) {
         xhr.send();
     }
 
-
-    //getEventData(tabUrl);
     getEventStatistics(tabUrl);
 
     function hideLoginForm () {
