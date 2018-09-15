@@ -2,12 +2,33 @@ import { searchingEventById } from './tasks/searchingEventById.js';
 
 document.addEventListener('DOMContentLoaded', function(){
     chrome.storage.sync.get(['jwt'], function(result){
-        run(result.jwt);
+        document.dispatchEvent(new CustomEvent("RetrievedJWT", {
+            detail: result.jwt
+        }));
     });
+
+    document.addEventListener('RetrievedJWT', function(e) {
+        chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+            var parser = document.createElement('a');
+            parser.href = tabs[0].url;
+
+            document.dispatchEvent(new CustomEvent("RunAPP", {
+                detail: {
+                    jwt: e.detail,
+                    tabUrl: parser
+                }
+            }));
+        });
+    });
+
+    document.addEventListener('RunAPP', function(e) {
+        run(e.detail.jwt, e.detail.tabUrl);
+    });
+
 });
 
-function run (jwt) {
-    if(jwt != undefined) {
+function run (jwt, tabUrl) {
+    if(jwt) {
         hideLoginForm();
         displayContent();
     }
@@ -79,16 +100,16 @@ function run (jwt) {
         xhr.send();
     }
 
-    function tabUrl(passToCallback) {
-        return chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-            var parser = document.createElement('a');
-            parser.href = tabs[0].url;
-            passToCallback(parser);
-        });
-    }
+    /*
+     *function eventSlug() {
+     *    tabUrl(function(url){
+     *        console.log(url);
+     *    });
+     *}
+     */
 
-    tabUrl(getEventData);
-    tabUrl(getEventStatistics);
+    getEventData(tabUrl);
+    getEventStatistics(tabUrl);
 
     function hideLoginForm () {
         let loginScreen = document.getElementById('login-screen');
@@ -132,7 +153,6 @@ function run (jwt) {
     });
 
     searchingEventById();
-
 }
 
 
