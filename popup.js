@@ -38,7 +38,7 @@ function run (jwt) {
         document.getElementById('total-guest-attendees').innerHTML = eventStatistics.attendees.guest.count;
     }
 
-    function getEventData(uri) {
+    function getEventData(tabUrl) {
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function(){
             if (xhr.readyState == 4) {
@@ -51,36 +51,37 @@ function run (jwt) {
             }
         };
 
+        let uri = 'https://api.evand.com' + tabUrl.pathname + '?links=webinar&include=connectApp';
         xhr.open("GET", uri, true);
         xhr.setRequestHeader("Authorization", jwt);
         xhr.send();
     }
 
-    function getEventStatistics (uri) {
+    function getEventStatistics (tabUri) {
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function(){
             if (xhr.readyState == 4) {
                 const eventStatistics = JSON.parse(xhr.responseText);
-
                 updateAttendeeRelatedInfo(eventStatistics);
             }
         };
 
+        let uri = 'https://api.evand.com' + tabUri.pathname + '/statistics';
         xhr.open("GET", uri, true);
         xhr.setRequestHeader("Authorization", jwt);
         xhr.send();
     }
 
-    chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-        var parser = document.createElement('a');
-        parser.href = tabs[0].url;
+    function tabUrl(passToCallback) {
+        return chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+            var parser = document.createElement('a');
+            parser.href = tabs[0].url;
+            passToCallback(parser);
+        });
+    }
 
-        let eventApiUri = 'https://api.evand.com';
-        eventApiUri += parser.pathname + '?links=webinar&include=connectApp';
-
-        getEventData(eventApiUri);
-        getEventStatistics('https://api.evand.com' + parser.pathname + '/statistics');
-    });
+    tabUrl(getEventData);
+    tabUrl(getEventStatistics);
 
     function hideLoginForm () {
         let loginScreen = document.getElementById('login-screen');
