@@ -1,8 +1,7 @@
 import { searchingEventById } from './tasks/searchingEventById.js';
 import { EventFinder } from './services/EventFinder.js';
 import { Main } from './services/Main.js';
-import { AnswerEventQuestions } from './tasks/AnswerEventQuestions.js';
-import { AnswerEventStatisticQuestions } from './tasks/AnswerEventStatisticQuestions.js';
+import * as Questions from './tasks/AnswerQuestion/Questions.js';
 
 const main = new Main();
 main.run(run);
@@ -47,8 +46,8 @@ function run (jwt, tabUrl) {
     eventFinder
         .bySlug(eventSlug(tabUrl))
         .then(function(event){
-            let questions = new AnswerEventQuestions();
-            document.getElementById('question-answers').innerHTML = questions.answer(event);
+            let questions = new Questions.Event();
+            document.getElementById('question-answers').innerHTML += questions.answer(event);
         })
         .catch(function(error){
             console.log('fuck', error);
@@ -60,8 +59,10 @@ function run (jwt, tabUrl) {
             if (xhr.readyState == 4) {
                 const eventStatistics = JSON.parse(xhr.responseText);
 
-                let questions = new AnswerEventStatisticQuestions();
-                document.getElementById('question-answers').innerHTML += questions.answer(eventStatistics);
+                let questions = new Questions.EventStatistics();
+                let answers = questions.answer(eventStatistics);
+                let questionAnswers = document.getElementById('question-answers');
+                questionAnswers.innerHTML = questionAnswers.innerHTML + answers;
             }
         };
 
