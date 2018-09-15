@@ -1,4 +1,5 @@
 import { searchingEventById } from './tasks/searchingEventById.js';
+import { EventFinder } from './services/EventFinder.js';
 
 document.addEventListener('DOMContentLoaded', function(){
     chrome.storage.sync.get(['jwt'], function(result){
@@ -33,26 +34,22 @@ function run (jwt, tabUrl) {
         displayContent();
     }
 
-    function updateEventId (e) {
-        const event = e.detail;
+    function updateEventId (event) {
         let element = document.getElementById('event-id');
         element.innerHTML = event.id; 
     }
 
-    function hasActiveWebinar (e) {
-        const event = e.detail;
+    function hasActiveWebinar (event) {
         let element = document.getElementById('has-active-webinar');
         element.innerHTML = event._links.webinar == null ? 'No' : 'Yay';
     }
 
-    function hasConnectApp(e) {
-        const event = e.detail;
+    function hasConnectApp(event) {
         let element = document.getElementById('has-connect-app');
         element.innerHTML = event.connectApp && event.connectApp.data ? 'Yesssss' : 'Na';
     }
 
-    function isUsingShowtime (e) {
-        const event = e.detail;
+    function isUsingShowtime (event) {
         let element = document.getElementById('is-using-showtime');
         element.innerHTML = event.is_using_showtime ? 'Sure it does!' : 'No man';
     }
@@ -63,27 +60,27 @@ function run (jwt, tabUrl) {
         document.getElementById('total-guest-attendees').innerHTML = eventStatistics.attendees.guest.count;
     }
 
-    function getEventData(tabUrl) {
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function(){
-            if (xhr.readyState == 4) {
-                let e = new CustomEvent("ReceivedEventData", {
-                    detail: JSON.parse(xhr.responseText).data
-                });
-                document.dispatchEvent(e);
-            }
-        };
+    function eventSlug(tabUrl) {
+        let pieces = tabUrl.pathname.split("/");
+        if(pieces.length >= 3 && pieces[1] === 'events') {
+            return pieces[2];
+        }
 
-        let uri = 'https://api.evand.com' + tabUrl.pathname + '?links=webinar&include=connectApp';
-        xhr.open("GET", uri, true);
-        xhr.setRequestHeader("Authorization", jwt);
-        xhr.send();
+        return null;
     }
 
-    document.addEventListener('ReceivedEventData', updateEventId);
-    document.addEventListener('ReceivedEventData', hasActiveWebinar);
-    document.addEventListener('ReceivedEventData', hasConnectApp);
-    document.addEventListener('ReceivedEventData', isUsingShowtime);
+    const eventFinder = new EventFinder(jwt);
+    eventFinder
+        .bySlug(eventSlug(tabUrl))
+        .then(function(event){
+            updateEventId(event);
+            hasActiveWebinar(event);
+            hasConnectApp(event);
+            isUsingShowtime(event);
+        })
+        .catch(function(error){
+            console.log('fuck', error);
+        });
 
     function getEventStatistics (tabUri) {
         var xhr = new XMLHttpRequest();
@@ -100,15 +97,8 @@ function run (jwt, tabUrl) {
         xhr.send();
     }
 
-    /*
-     *function eventSlug() {
-     *    tabUrl(function(url){
-     *        console.log(url);
-     *    });
-     *}
-     */
 
-    getEventData(tabUrl);
+    //getEventData(tabUrl);
     getEventStatistics(tabUrl);
 
     function hideLoginForm () {
