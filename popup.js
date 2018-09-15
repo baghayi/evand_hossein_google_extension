@@ -13,26 +13,6 @@ function run (jwt, tabUrl) {
         displayContent();
     }
 
-    function updateEventId (event) {
-        let element = document.getElementById('event-id');
-        element.innerHTML = event.id; 
-    }
-
-    function hasActiveWebinar (event) {
-        let element = document.getElementById('has-active-webinar');
-        element.innerHTML = event._links.webinar == null ? 'No' : 'Yay';
-    }
-
-    function hasConnectApp(event) {
-        let element = document.getElementById('has-connect-app');
-        element.innerHTML = event.connectApp && event.connectApp.data ? 'Yesssss' : 'Na';
-    }
-
-    function isUsingShowtime (event) {
-        let element = document.getElementById('is-using-showtime');
-        element.innerHTML = event.is_using_showtime ? 'Sure it does!' : 'No man';
-    }
-
     function eventSlug(tabUrl) {
         let pieces = tabUrl.pathname.split("/");
         if(pieces.length >= 3 && pieces[1] === 'events') {
