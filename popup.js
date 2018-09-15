@@ -27,6 +27,11 @@ function run (jwt) {
         element.innerHTML = event.connectApp && event.connectApp.data ? 'Yesssss' : 'Na';
     }
 
+    function isUsingShowtime (event) {
+        let element = document.getElementById('is-using-showtime');
+        element.innerHTML = event.is_using_showtime ? 'Sure it does!' : 'No man';
+    }
+
     function updateAttendeeRelatedInfo (attendees) {
         let element = document.getElementById('total-attendees');
         element.innerHTML = attendees.meta.pagination.total;
@@ -41,6 +46,7 @@ function run (jwt) {
                 updateEventId(event);
                 hasActiveWebinar(event);
                 hasConnectApp(event);
+                isUsingShowtime(event);
             }
         };
 
