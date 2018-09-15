@@ -1,17 +1,4 @@
-
-function fetchEventDataById (eventId, onSuccessCallback) {
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function(){
-        if (xhr.readyState == 4) {
-            const event = JSON.parse(xhr.responseText).data;
-            onSuccessCallback(event);
-        }
-    };
-
-    xhr.open("GET", "https://api.evand.com/events/id_" + eventId, true);
-    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhr.send();
-}
+import { EventFinder } from '../services/EventFinder.js';
 
 export function searchingEventById() {
     let eventFinderById  = document.querySelector("p#event-finder-by-id input");
@@ -23,7 +10,7 @@ export function searchingEventById() {
         bulletin.style = "display: inline;";
 
         const eventId = e.target.value;
-        const event = fetchEventDataById(eventId, function(event){
+        const event = (new EventFinder).byId(eventId, function(event){
             if(event == undefined) {
                 bulletin.innerHTML = "Not Found!";
                 return;
