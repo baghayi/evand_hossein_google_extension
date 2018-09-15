@@ -35,6 +35,7 @@ function run (jwt) {
     function updateAttendeeRelatedInfo (eventStatistics) {
         document.getElementById('total-attendees').innerHTML = eventStatistics.attendees.all.count;
         document.getElementById('total-tickets').innerHTML = eventStatistics.tickets.all.count;
+        document.getElementById('total-guest-attendees').innerHTML = eventStatistics.attendees.guest.count;
     }
 
     function getEventData(uri) {
