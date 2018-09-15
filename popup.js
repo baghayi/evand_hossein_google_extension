@@ -1,32 +1,9 @@
 import { searchingEventById } from './tasks/searchingEventById.js';
 import { EventFinder } from './services/EventFinder.js';
+import { Main } from './services/Main.js';
 
-document.addEventListener('DOMContentLoaded', function(){
-    chrome.storage.sync.get(['jwt'], function(result){
-        document.dispatchEvent(new CustomEvent("RetrievedJWT", {
-            detail: result.jwt
-        }));
-    });
-
-    document.addEventListener('RetrievedJWT', function(e) {
-        chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-            var parser = document.createElement('a');
-            parser.href = tabs[0].url;
-
-            document.dispatchEvent(new CustomEvent("RunAPP", {
-                detail: {
-                    jwt: e.detail,
-                    tabUrl: parser
-                }
-            }));
-        });
-    });
-
-    document.addEventListener('RunAPP', function(e) {
-        run(e.detail.jwt, e.detail.tabUrl);
-    });
-
-});
+const main = new Main();
+main.run(run);
 
 function run (jwt, tabUrl) {
     if(jwt) {
