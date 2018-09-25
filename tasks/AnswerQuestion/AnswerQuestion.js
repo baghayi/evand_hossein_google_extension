@@ -6,7 +6,13 @@ export class AnswerQuestion {
         this.questions.map(function(question){
             let answerEement = document.createElement('span');
 
-            let answer = question.findAnswer(object);
+            let answer = 'undefined';
+            try {
+                let answer = question.findAnswer(object);
+            }catch(error) {
+                console.log(error);
+            }
+
             switch(typeof(answer)){
                 case "boolean":
                     answerEement.innerHTML = answer ? "Sure" : "Na";
