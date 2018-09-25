@@ -6,7 +6,7 @@ export class Event extends AnswerQuestion {
         this.questions = [
             {label: "Event Id", findAnswer: (object) => object.id},
             {label: "Has Active Webinar", findAnswer: (object) => object._links.webinar != null},
-            {label: "Has Connect-App", findAnswer: (object) => object.connectApp != undefined },
+            //{label: "Has Connect-App", findAnswer: (object) => object.connectApp != undefined },
             {label: "Is Using Showtime", findAnswer: (object) => object.is_using_showtime && true}
         ];
     }

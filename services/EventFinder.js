@@ -8,7 +8,7 @@ export class EventFinder {
     }
 
     bySlug(eventSlug, onSuccessCallback) {
-        let uri = 'https://api.evand.com/events/' + eventSlug + '?links=webinar&include=connectApp';
+        let uri = 'https://api.evand.com/events/' + eventSlug + '?links=webinar';
         let promise = fetch(uri, {
             headers: {
                 "Authorization": this.jwt,
