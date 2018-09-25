@@ -6,5 +6,9 @@
   "browser_action": {
     "default_popup": "popup.html"
   },
+  "background": {
+    "scripts": ["tasks/DisplayTotalUnreadMessages.js"],
+    "persistent": false
+  },
   "manifest_version": 2
 }
