@@ -8,7 +8,7 @@ export class AnswerQuestion {
 
             let answer = 'undefined';
             try {
-                let answer = question.findAnswer(object);
+                answer = question.findAnswer(object);
             }catch(error) {
                 console.log(error);
             }
