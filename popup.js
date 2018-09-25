@@ -6,12 +6,53 @@ import * as Questions from './tasks/AnswerQuestion/Questions.js';
 const main = new Main();
 main.run(run);
 
+function hideLoginForm () {
+    let loginScreen = document.getElementById('login-screen');
+    loginScreen.style = "display: none;";
+}
+
+function displayContent () {
+    let contentScreen = document.getElementById('content-screen');
+    contentScreen.style = "display: block;";
+}
+
+function logUserIn (email, password) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function(){
+        if (xhr.readyState == 4) {
+            const jwt = xhr.getResponseHeader('Authorization');
+
+            chrome.storage.sync.set({'jwt': jwt}, function(){
+                hideLoginForm();
+                displayContent();
+                console.log('Saved!');
+            });
+        }
+    };
+
+    xhr.open("POST", "https://api.evand.com/auth/login", true);
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send(JSON.stringify({
+        "email" : email,
+        "password": password
+    }));
+}
 
 function run (jwt, tabUrl) {
-    if(jwt) {
-        hideLoginForm();
-        displayContent();
+    if(!jwt) {
+        let loginButton = document.getElementById('login');
+        loginButton.addEventListener('click', function(){
+            let email = document.getElementById('login-email');
+            let password = document.getElementById('login-password');
+
+            logUserIn(email.value, password.value);
+        });
+
+        return;
     }
+
+    hideLoginForm();
+    displayContent();
 
     function eventSlug(tabUrl) {
         let pieces = tabUrl.pathname.split("/");
@@ -54,46 +95,9 @@ function run (jwt, tabUrl) {
 
     getEventStatistics(tabUrl);
 
-    function hideLoginForm () {
-        let loginScreen = document.getElementById('login-screen');
-        loginScreen.style = "display: none;";
-    }
-
-    function displayContent () {
-        let contentScreen = document.getElementById('content-screen');
-        contentScreen.style = "display: block;";
-    }
-
-    function logUserIn (email, password) {
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function(){
-            if (xhr.readyState == 4) {
-                const jwt = xhr.getResponseHeader('Authorization');
-
-                chrome.storage.sync.set({'jwt': jwt}, function(){
-                    hideLoginForm();
-                    displayContent();
-                    console.log('Saved!');
-                });
-            }
-        };
-
-        xhr.open("POST", "https://api.evand.com/auth/login", true);
-        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        xhr.send(JSON.stringify({
-            "email" : email,
-            "password": password
-        }));
-    }
 
 
-    let loginButton = document.getElementById('login');
-    loginButton.addEventListener('click', function(){
-        let email = document.getElementById('login-email');
-        let password = document.getElementById('login-password');
 
-        logUserIn(email.value, password.value);
-    });
 
     searchingEventById();
 }
