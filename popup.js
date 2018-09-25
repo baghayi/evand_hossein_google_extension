@@ -19,7 +19,7 @@ function displayContent () {
 function logUserIn (email, password) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function(){
-        if (xhr.readyState == 4) {
+        if (xhr.readyState == 4 && xhr.status >= 200 && xhr.status < 300) {
             const jwt = xhr.getResponseHeader('Authorization');
 
             chrome.storage.sync.set({'jwt': jwt}, function(){
@@ -77,7 +77,8 @@ function run (jwt, tabUrl) {
     function getEventStatistics (tabUri) {
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function(){
-            if (xhr.readyState == 4) {
+
+            if (xhr.readyState == 4 && xhr.status >= 200 && xhr.status < 300) {
                 const eventStatistics = JSON.parse(xhr.responseText);
 
                 let questions = new Questions.EventStatistics();
