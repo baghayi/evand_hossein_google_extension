@@ -11,9 +11,57 @@ function hideLoginForm () {
     loginScreen.style = "display: none;";
 }
 
-function displayContent () {
+function eventSlug(tabUrl) {
+    let pieces = tabUrl.pathname.split("/");
+    if(pieces.length >= 3 && pieces[1] === 'events') {
+        return pieces[2];
+    }
+
+    return null;
+}
+
+function getEventStatistics (jwt, tabUrl) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function(){
+
+        if (xhr.readyState == 4 && xhr.status >= 200 && xhr.status < 300) {
+            const eventStatistics = JSON.parse(xhr.responseText);
+
+            let questions = new Questions.EventStatistics();
+            let answers = questions.answer(eventStatistics);
+            let questionAnswers = document.getElementById('question-answers');
+            questionAnswers.innerHTML = questionAnswers.innerHTML + answers;
+        }
+    };
+
+    let uri = 'https://api.evand.com' + tabUrl.pathname + '/statistics';
+    xhr.open("GET", uri, true);
+    xhr.setRequestHeader("Authorization", jwt);
+    xhr.send();
+}
+
+function displayContent (jwt, tabUrl) {
     let contentScreen = document.getElementById('content-screen');
     contentScreen.style = "display: block;";
+
+
+
+    if(tabUrl != null) {
+        const eventFinder = new EventFinder(jwt);
+        eventFinder
+            .bySlug(eventSlug(tabUrl))
+            .then(function(event){
+                let questions = new Questions.Event();
+                document.getElementById('question-answers').innerHTML += questions.answer(event);
+            })
+        .catch(function(error){
+            console.log('fuck', error);
+        });
+
+        getEventStatistics(jwt, tabUrl);
+    }
+
+    searchingEventById();
 }
 
 function logUserIn (email, password) {
@@ -24,9 +72,15 @@ function logUserIn (email, password) {
 
             chrome.storage.sync.set({'jwt': jwt}, function(){
                 hideLoginForm();
-                displayContent();
+                displayContent(jwt, null);
+                document.querySelector('#login-screen > p').innerHTML = '';
                 console.log('Saved!');
             });
+        }
+        else if (xhr.readyState == 4 && xhr.status == 422) {
+            console.log(xhr);
+            document.querySelector('#login-screen > p').innerHTML = 
+                "<span style='color: red'>" + JSON.parse(xhr.responseText).message + "</span>";
         }
     };
 
@@ -52,55 +106,8 @@ function run (jwt, tabUrl) {
     }
 
     hideLoginForm();
-    displayContent();
+    displayContent(jwt, tabUrl);
 
-    function eventSlug(tabUrl) {
-        let pieces = tabUrl.pathname.split("/");
-        if(pieces.length >= 3 && pieces[1] === 'events') {
-            return pieces[2];
-        }
-
-        return null;
-    }
-
-    const eventFinder = new EventFinder(jwt);
-    eventFinder
-        .bySlug(eventSlug(tabUrl))
-        .then(function(event){
-            let questions = new Questions.Event();
-            document.getElementById('question-answers').innerHTML += questions.answer(event);
-        })
-        .catch(function(error){
-            console.log('fuck', error);
-        });
-
-    function getEventStatistics (tabUri) {
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function(){
-
-            if (xhr.readyState == 4 && xhr.status >= 200 && xhr.status < 300) {
-                const eventStatistics = JSON.parse(xhr.responseText);
-
-                let questions = new Questions.EventStatistics();
-                let answers = questions.answer(eventStatistics);
-                let questionAnswers = document.getElementById('question-answers');
-                questionAnswers.innerHTML = questionAnswers.innerHTML + answers;
-            }
-        };
-
-        let uri = 'https://api.evand.com' + tabUri.pathname + '/statistics';
-        xhr.open("GET", uri, true);
-        xhr.setRequestHeader("Authorization", jwt);
-        xhr.send();
-    }
-
-    getEventStatistics(tabUrl);
-
-
-
-
-
-    searchingEventById();
 }
 
 
