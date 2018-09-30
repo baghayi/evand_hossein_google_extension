@@ -15,6 +15,13 @@ function eventSlug(tabUrl) {
     return null;
 }
 
+function updateQuestionAnswers(answers){
+    let questionAnswers = document.getElementById('question-answers');
+    document.querySelector('#question-answers > .loading-message').style = "display: none;";
+
+    questionAnswers.innerHTML = questionAnswers.innerHTML + answers;
+}
+
 function getEventStatistics (jwt, tabUrl) {
     const uri = 'https://api.evand.com' + tabUrl.pathname + '/statistics';
     let promise = fetch(uri, {
@@ -36,13 +43,15 @@ function getEventStatistics (jwt, tabUrl) {
         })
         .then(function(eventStatistics){
             let questions = new Questions.EventStatistics();
-            let answers = questions.answer(eventStatistics);
-            let questionAnswers = document.getElementById('question-answers');
-            questionAnswers.innerHTML = questionAnswers.innerHTML + answers;
+            updateQuestionAnswers(questions.answer(eventStatistics));
         });
 }
 
 function run (jwt, tabUrl) {
+
+    if(null === eventSlug(tabUrl)) {
+        document.querySelector('#question-answers > .loading-message').style = "display: none;";
+    }
 
     if(tabUrl != null) {
         const eventFinder = new EventFinder(jwt);
@@ -50,7 +59,7 @@ function run (jwt, tabUrl) {
             .bySlug(eventSlug(tabUrl))
             .then(function(event){
                 let questions = new Questions.Event();
-                document.getElementById('question-answers').innerHTML += questions.answer(event);
+                updateQuestionAnswers(questions.answer(event));
             })
         .catch(function(error){
             console.log('fuck', error);
