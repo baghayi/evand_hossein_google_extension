@@ -52,15 +52,9 @@ function run (jwt, tabUrl) {
     if(null === eventSlug(tabUrl)) {
         document.querySelector('#question-answers > .loading-message').style = "display: none;";
     }else {
-        const eventFinder = new EventFinder(jwt);
-        eventFinder
-            .bySlug(eventSlug(tabUrl))
-            .then(function(event){
-                let questions = new Questions.Event();
-                updateQuestionAnswers(questions.answer(event));
-            })
-        .catch(function(error){
-            console.log('fuck', error);
+        (new EventFinder(jwt)).bySlug(eventSlug(tabUrl), function(event){
+            let questions = new Questions.Event();
+            updateQuestionAnswers(questions.answer(event));
         });
 
         getEventStatistics(jwt, tabUrl);

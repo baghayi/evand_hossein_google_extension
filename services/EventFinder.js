@@ -27,7 +27,10 @@ export class EventFinder {
             return response.json();
         })
         .then(function(eventData){
-            return eventData.data;
+            onSuccessCallback(eventData.data);
+        })
+        .catch(function(error){
+            console.log('fuck', error);
         });
 
         return promise;
