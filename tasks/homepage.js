@@ -51,9 +51,7 @@ function run (jwt, tabUrl) {
 
     if(null === eventSlug(tabUrl)) {
         document.querySelector('#question-answers > .loading-message').style = "display: none;";
-    }
-
-    if(tabUrl != null) {
+    }else {
         const eventFinder = new EventFinder(jwt);
         eventFinder
             .bySlug(eventSlug(tabUrl))
@@ -67,6 +65,7 @@ function run (jwt, tabUrl) {
 
         getEventStatistics(jwt, tabUrl);
     }
+
 
     searchingEventById();
 
