@@ -1,6 +1,3 @@
-
-let events = [];
-
 export class EventFinder {
 
     constructor(jwt) {
