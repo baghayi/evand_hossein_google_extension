@@ -1,8 +1,8 @@
+let answers = [];
+
 export class AnswerQuestion {
 
     answer(object) {
-        let answeredQuestions = document.createElement("div");
-
         this.questions.map(function(question){
             let answerEement = document.createElement('span');
 
@@ -25,9 +25,26 @@ export class AnswerQuestion {
             let questionAnswer = document.createElement("p");
             questionAnswer.innerHTML = question.label + ": " + answerEement.outerHTML;
 
-            answeredQuestions.innerHTML += questionAnswer.outerHTML;
+            answers.push({
+                order: question.order,
+                answer: questionAnswer.outerHTML
+            });
         });
 
-        return answeredQuestions.innerHTML;
+        this.sortAnswers();
+        this.displayAnswers();
+    }
+
+    sortAnswers() {
+        answers = answers.sort(function(a, b){
+            return a.order - b.order;
+        });
+    }
+
+    displayAnswers(){
+        let questionAnswers = document.getElementById('question-answers');
+        questionAnswers.innerHTML = answers.reduce(function(a, b){
+            return a + b.answer;
+        }, '');
     }
 }
