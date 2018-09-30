@@ -16,29 +16,31 @@ function eventSlug(tabUrl) {
 }
 
 function getEventStatistics (jwt, tabUrl) {
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function(){
-
-        if (xhr.readyState == 4 && xhr.status >= 200 && xhr.status < 300) {
-            const eventStatistics = JSON.parse(xhr.responseText);
-
+    const uri = 'https://api.evand.com' + tabUrl.pathname + '/statistics';
+    let promise = fetch(uri, {
+        headers: {
+            "Authorization": jwt,
+            "Content-Type" : "application/json",
+            "Accept" : "application/json"
+        }
+    })
+        .then(function(response){
+            if(response.status >= 200 && response.status < 300) {
+                return Promise.resolve(response);
+            }else {
+                return Promise.reject(new Error(response.statusText));
+            }
+        })
+        .then(function(response){
+            return response.json();
+        })
+        .then(function(eventStatistics){
             let questions = new Questions.EventStatistics();
             let answers = questions.answer(eventStatistics);
             let questionAnswers = document.getElementById('question-answers');
             questionAnswers.innerHTML = questionAnswers.innerHTML + answers;
-        }
-    };
-
-    let uri = 'https://api.evand.com' + tabUrl.pathname + '/statistics';
-    xhr.open("GET", uri, true);
-    xhr.setRequestHeader("Authorization", jwt);
-    xhr.send();
+        });
 }
-
-function displayContent (jwt, tabUrl) {
-
-}
-
 
 function run (jwt, tabUrl) {
 
