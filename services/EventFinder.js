@@ -32,8 +32,6 @@ export class EventFinder {
         .catch(function(error){
             console.log('fuck', error);
         });
-
-        return promise;
     }
 
     byId(eventId, onSuccessCallback) {
