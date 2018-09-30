@@ -36,10 +36,11 @@ function getEventStatistics (jwt, tabUrl) {
 }
 
 function displayContent (jwt, tabUrl) {
-    let contentScreen = document.getElementById('content-screen');
-    contentScreen.style = "display: block;";
+
+}
 
 
+function run (jwt, tabUrl) {
 
     if(tabUrl != null) {
         const eventFinder = new EventFinder(jwt);
@@ -57,16 +58,6 @@ function displayContent (jwt, tabUrl) {
     }
 
     searchingEventById();
-}
-
-
-function run (jwt, tabUrl) {
-    if(!jwt) {
-
-        return;
-    }
-
-    displayContent(jwt, tabUrl);
 
 }
 
