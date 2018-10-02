@@ -16,6 +16,15 @@ function eventSlug(tabUrl) {
     return null;
 }
 
+function gotoPage(page, jwtToken) {
+    chrome.runtime.sendMessage("", {
+        action: "Page",
+        goto: page,
+        jwt: jwtToken
+    });
+    window.close();
+}
+
 
 function run (jwt, tabUrl) {
 
@@ -36,6 +45,10 @@ function run (jwt, tabUrl) {
 
 
     searchingEventById();
+
+    document.getElementById('event-tags').addEventListener('click', function(e){
+        gotoPage('EventTags', jwt);
+    });
 
 }
 

@@ -2,8 +2,8 @@
 export class Main {
 
     retrieveJWT(then) {
-        chrome.storage.sync.get(['jwt'], function(result){
-            then(result.jwt);
+        chrome.storage.sync.get(['status'], function(result){
+            then(result.status.jwt);
         });
     }
 

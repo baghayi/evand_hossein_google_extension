@@ -1,7 +1,7 @@
-function loadHomepage (jwtToken) {
+function gotoPage (page, jwtToken) {
     chrome.runtime.sendMessage("", {
         action: "Page",
-        goto: "Homepage",
+        goto: page,
         jwt: jwtToken
     });
 }
@@ -11,14 +11,9 @@ function logUserIn (email, password) {
     xhr.onreadystatechange = function(){
         if (xhr.readyState == 4 && xhr.status >= 200 && xhr.status < 300) {
             const jwt = xhr.getResponseHeader('Authorization');
-            loadHomepage(jwt);
-
-            chrome.storage.sync.set({'jwt': jwt}, function(){
-                console.log('Saved JWT!');
-            });
+            gotoPage('Homepage', jwt);
         }
         else if (xhr.readyState == 4 && xhr.status == 422) {
-            console.log(xhr);
             document.querySelector('#login-screen > p').innerHTML = 
                 "<span style='color: red'>" + JSON.parse(xhr.responseText).message + "</span>";
         }
