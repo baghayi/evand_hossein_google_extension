@@ -33,9 +33,16 @@ function logUserIn (email, password) {
 }
 
 let loginButton = document.getElementById('login');
-loginButton.addEventListener('click', function(){
+let password = document.getElementById('login-password');
+function logUserInListener() {
     let email = document.getElementById('login-email');
-    let password = document.getElementById('login-password');
-
     logUserIn(email.value, password.value);
+}
+loginButton.addEventListener('click', logUserInListener);
+password.addEventListener('keypress', function(e){
+    const ENTER = 13;
+    let key = e.which || e.keyCode;
+    if (key === ENTER) {
+        logUserInListener();
+    }
 });
