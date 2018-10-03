@@ -3,13 +3,36 @@
   <head>
     <style>
 body {
-    width: 200px;
+    width: 300px;
+}
+
+ul#fucking-tags {
+    direction: rtl;
+    text-align: right;
+    font-family: tahoma, sans-serif;
+    font-size: 1.2em;
+}
+
+span#how-to-remove-tag {
+    font-weight: bold;
+    display: none;
+}
+
+input#new-tag-please {
+    width: 90%;
+    padding: 5px;
 }
     </style>
   </head>
   <body>
       <button id="homepage">Homepage</button>
-      <p>Event tags Page</p>
+      <p>Hello Tags :) <span id="how-to-remove-tag">Double click for removing tags!</span></p>
+
+
+      <input type="text" placeholder="New tag name then press ENTER ..." id="new-tag-please">
+
+      <ul id="fucking-tags">
+      </ul>
 
     <script type="module" src="../tasks/event-tags.js"></script>
   </body>
