@@ -1,12 +1,12 @@
-function gotoPage (page, jwtToken) {
-    chrome.runtime.sendMessage("", {
-        action: "Page",
-        goto: page,
-        jwt: jwtToken
-    });
-    window.close();
-}
+import { Main } from '../services/Main.js';
 
-document.getElementById('homepage').addEventListener('click', function(){
-    gotoPage('Homepage', null);
+const main = new Main();
+main.run(function(jwt, tabUrl){
+
+    document.getElementById('homepage').addEventListener('click', function(){
+        main.gotoPage('Homepage', jwt);
+    });
 });
+
+
+

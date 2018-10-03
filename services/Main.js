@@ -23,4 +23,13 @@ export class Main {
                 (jwt, tabUrl) => callWhenReady(jwt, tabUrl)
             ));
     }
+    
+    gotoPage (page, jwtToken) {
+        chrome.runtime.sendMessage("", {
+            action: "Page",
+            goto: page,
+            jwt: jwtToken
+        });
+        window.close();
+    }
 }
