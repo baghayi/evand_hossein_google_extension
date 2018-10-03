@@ -12,7 +12,7 @@ function eventSlug(tabUrl) {
 let currentTags = [];
 
 function listEventTags(slug, jwt) {
-    fetch('https://api.evand.com/events/' + slug + '/tags?per_page=50', {
+    fetch('https://api.evand.com/events/' + slug + '/tags?per_page=50&sort=created_at', {
         headers: {
             "Authorization": jwt,
             "Content-Type" : "application/json",
@@ -39,10 +39,12 @@ function listEventTags(slug, jwt) {
                 let removeTag = document.createElement('button');
                 removeTag.innerText = "X";
                 removeTag.ondblclick = function(){
-                    const tagId = this.parentNode.getAttribute('data-tag-id');
-                    console.log(tagId);
+                    const tag = this.parentNode.getAttribute('data-tag-name');
+                    const filteredTags = currentTags.filter(function(item){
+                        return item != tag;
+                    });
 
-                    // send request to delete tag
+                    saveTags(filteredTags, slug, jwt);
                 };
                 removeTag.onclick = function(){
                     let help = document.getElementById('how-to-remove-tag');
@@ -52,7 +54,7 @@ function listEventTags(slug, jwt) {
                 let li = document.createElement('li');
                 li.append(removeTag);
                 li.append(" " + tag.name);
-                li.setAttribute('data-tag-id', tag.id);
+                li.setAttribute('data-tag-name', tag.name);
                 tags.append(li);
             });
         }).catch(function(error){
@@ -60,9 +62,7 @@ function listEventTags(slug, jwt) {
         });
 }
 
-function createNewTag(newTagName, slug, jwt) {
-    let tags = currentTags;
-    tags.push(newTagName);
+function saveTags(tags, slug, jwt) {
 
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function(){
@@ -96,7 +96,8 @@ main.run(function(jwt, tabUrl){
                 return;
             }
 
-            createNewTag(this.value, eventSlyggy, jwt);
+            currentTags.push(this.value);
+            saveTags(currentTags, eventSlyggy, jwt);
             this.value = '';
         });
     }
