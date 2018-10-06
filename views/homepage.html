@@ -28,6 +28,10 @@
           width: 50%;
       }
 
+      a#event-homepage, a#event-panel-accounting {
+          display: none;
+      }
+
     </style>
   </head>
   <body>
@@ -39,8 +43,10 @@
 
       <p id="event-finder-by-id">
       <input type="number" placeholder="Event by id ..." />
-      <a target="_blank"></a>
-      <span></span>
+      <span id="event-finder-comment"></span>
+      <p id="found-event-name"></p>
+      <a target="_blank" id="event-homepage">Event</a>
+      <a target="_blank" id="event-panel-accounting">Accounting</a>
       </p>
 
     <script type="module" src="../tasks/homepage.js"></script>
