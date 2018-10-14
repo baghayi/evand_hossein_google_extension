@@ -24,8 +24,8 @@ function fetchTotalUnreadUserMessages (jwt) {
 }
 
 setInterval(function(){
-    chrome.storage.sync.get(['jwt'], function(result){
-        const jwt = result.jwt;
+    chrome.storage.sync.get(['status'], function(result){
+        const jwt = result.status.jwt;
         if(jwt) {
             fetchTotalUnreadUserMessages(jwt)
                 .then(function(totalUnreadMessages){
