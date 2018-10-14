@@ -1,13 +1,20 @@
 {
-  "name": "Evand Hossein",
-  "version": "1.0",
-  "description": "This extension is supposed to make Hossein's life much much easier.",
-  "permissions": ["https://api.evand.com/", "tabs", "storage"],
-  "browser_action": {
-  },
-  "background": {
-    "scripts": ["tasks/DisplayTotalUnreadMessages.js", "tasks/StartingScreenSelector.js"],
-    "persistent": false
-  },
-  "manifest_version": 2
+    "name": "Evand Hossein",
+    "version": "1.0",
+    "description": "This extension is supposed to make Hossein's life much much easier.",
+    "permissions": ["https://api.evand.com/", "tabs", "storage"],
+    "browser_action": {
+    },
+    "background": {
+        "scripts": ["tasks/DisplayTotalUnreadMessages.js", "tasks/StartingScreenSelector.js"],
+        "persistent": false
+    },
+    "manifest_version": 2,
+    "commands": {
+        "_execute_browser_action": {
+            "suggested_key": {
+                "linux": "Alt+C"
+            }
+        }
+    }
 }
