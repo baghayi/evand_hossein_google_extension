@@ -1,6 +1,6 @@
 import { EventFinder } from '../services/EventFinder.js';
 
-export function searchingEventById() {
+export function searchingEventById(jwt) {
     let eventFinderById  = document.querySelector("p#event-finder-by-id input");
 
     let eventHomepage  = document.getElementById("event-homepage");
@@ -16,7 +16,7 @@ export function searchingEventById() {
         bulletin.style = "display: inline;";
 
         const eventId = e.target.value;
-        const event = (new EventFinder).byId(eventId, function(event){
+        const event = (new EventFinder(jwt)).byId(eventId, function(event){
             if(event == undefined) {
                 bulletin.innerHTML = "Not Found!";
                 return;

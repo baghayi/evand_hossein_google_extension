@@ -44,7 +44,7 @@ function run (jwt, tabUrl) {
     }
 
 
-    searchingEventById();
+    searchingEventById(jwt);
 
     document.getElementById('event-tags').addEventListener('click', function(e){
         gotoPage('EventTags', jwt);

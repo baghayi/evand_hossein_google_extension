@@ -42,6 +42,7 @@ export class EventFinder {
 
         xhr.open("GET", "https://api.evand.com/events/id_" + eventId, true);
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhr.setRequestHeader("Authorization", this.jwt);
         xhr.send();
     }
 }
