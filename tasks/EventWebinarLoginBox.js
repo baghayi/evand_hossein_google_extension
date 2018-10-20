@@ -8,12 +8,9 @@ function updateWebinarBox(tabId) {
               input#ticket-identifier {
                   padding: 5px;
                   margin-left: 5px;
-                  width: 40px;
+                  width: 50px;
               }
               input#goto-verification-step {
-                  padding: 5px;
-              }
-              select#verification_method {
                   padding: 5px;
               }
               p#webinar-login-as-organizer {
@@ -35,10 +32,6 @@ function updateWebinarBox(tabId) {
               <h3>ورودیه وبینار</h3>
               <div id="inputs">
               <input type="text" placeholder="کد بلیت" id="ticket-identifier">
-              <select id="verification_method">
-                  <option value="mobile">تایید با موبایل</option>
-                  <option value="email">تایید بد ایمیل</option>
-              </select>
               <input type="button" value="ورود" id="goto-verification-step">
               </div>
 
@@ -83,7 +76,7 @@ function updateWebinarBox(tabId) {
                   }));
               };
 
-              function requestIdentifierToken(shadowRoot, identifier, verificationMethod) {
+              function requestIdentifierToken(shadowRoot, identifier) {
                   var xhr = new XMLHttpRequest();
                   xhr.onreadystatechange = function(){
                       if (this.readyState == XMLHttpRequest.DONE && this.status >= 200 < 400) {
@@ -96,8 +89,7 @@ function updateWebinarBox(tabId) {
                   xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                   xhr.send(JSON.stringify({
                       'identifier': identifier,
-                      'identifier_type': 'ticket',
-                      'verification_method': verificationMethod,
+                      'identifier_type': 'ticket'
                   }));
               }
           let webinarBox = document.querySelector('div.event-location-webinar').parentNode.parentNode;
@@ -111,10 +103,9 @@ function updateWebinarBox(tabId) {
 
               shadowRoot.getElementById('goto-verification-step').addEventListener('click', function(e){
                   const identifier = shadowRoot.getElementById('ticket-identifier');
-                  const verificationMethod = shadowRoot.getElementById('verification_method');
                   console.log('login as attendee');
                   
-                  requestIdentifierToken(shadowRoot, identifier.value, verificationMethod.value);
+                  requestIdentifierToken(shadowRoot, identifier.value);
               });
           }
 
