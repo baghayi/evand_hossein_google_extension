@@ -76,11 +76,15 @@
     function requestWebinarLoginURL(jwt, identifierToken, ticket, shadowRoot) {
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function(){
-            if (this.readyState == XMLHttpRequest.DONE && this.status >= 200 && this.status < 400) {
+            if(this.readyState != XMLHttpRequest.DONE) {
+                return;
+            }
+
+            if (this.status >= 200 && this.status < 400) {
                 const data = JSON.parse(xhr.responseText).data;
                 window.location = data.url;
             }
-            else if(this.readyState == XMLHttpRequest.DONE && this.status == 403 && jwt != null) {
+            else if(this.status == 403 && jwt != null) {
                 requestIdentifierToken(shadowRoot, ticket);
             }
 
