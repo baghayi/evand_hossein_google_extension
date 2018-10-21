@@ -60,7 +60,7 @@
                 const data = JSON.parse(xhr.responseText).data;
                 const identifierToken = data.token;
                 // request webinar login
-                requestWebinarLoginURL(null, identifierToken, ticket);
+                requestWebinarLoginURL(null, identifierToken, ticket, null);
             }
 
             // handle when verification code is wrong
@@ -73,12 +73,15 @@
         }));
     };
 
-    function requestWebinarLoginURL(jwt, identifierToken, ticket) {
+    function requestWebinarLoginURL(jwt, identifierToken, ticket, shadowRoot) {
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function(){
-            if (this.readyState == XMLHttpRequest.DONE && this.status >= 200 < 400) {
+            if (this.readyState == XMLHttpRequest.DONE && this.status >= 200 && this.status < 400) {
                 const data = JSON.parse(xhr.responseText).data;
                 window.location = data.url;
+            }
+            else if(this.readyState == XMLHttpRequest.DONE && this.status == 403 && jwt != null) {
+                requestIdentifierToken(shadowRoot, ticket);
             }
 
             // handle errors
@@ -129,7 +132,7 @@
             let jwt = null;
             cookies.forEach(x => x[0] == 'jwt' ? jwt = decodeURIComponent(x[1]) : '')
             if(jwt != null) {
-                requestWebinarLoginURL(jwt, null, identifier.value);
+                requestWebinarLoginURL(jwt, null, identifier.value, shadowRoot);
             }else {
                 requestIdentifierToken(shadowRoot, identifier.value);
             }
