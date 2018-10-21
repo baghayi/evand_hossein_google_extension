@@ -53,11 +53,11 @@ function updateWebinarBox(tabId) {
                   shadowRoot.getElementById('jump-into-webinar').addEventListener('click', function(){
                       const verificationCode = shadowRoot.getElementById('verification-code').value;
                       
-                      verifiPseudoToken(verificationCode, verificationUri);
+                      verifyPseudoToken(verificationCode, verificationUri);
                   });
               }
 
-              function verifiPseudoToken(verificationCode, verificationUri) {
+              function verifyPseudoToken(verificationCode, verificationUri) {
                   var xhr = new XMLHttpRequest();
                   xhr.onreadystatechange = function(){
                       if (this.readyState == XMLHttpRequest.DONE && this.status >= 200 < 400) {
