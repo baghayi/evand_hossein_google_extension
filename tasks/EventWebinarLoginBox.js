@@ -41,7 +41,7 @@ function updateWebinarBox(tabId) {
 
               const EVAND_API = 'https://api.evand.com';
 
-              function displayVerificationItems(shadowRoot, verificationUri) {
+              function displayVerificationItems(shadowRoot, verificationUri, ticket) {
                   const html = \`
                       <input type="text" placeholder="کد تاییدیه" id="verification-code">
                       <input type="button" value="ورود به وبینار" id="jump-into-webinar">
@@ -53,17 +53,18 @@ function updateWebinarBox(tabId) {
                   shadowRoot.getElementById('jump-into-webinar').addEventListener('click', function(){
                       const verificationCode = shadowRoot.getElementById('verification-code').value;
                       
-                      verifyPseudoToken(verificationCode, verificationUri);
+                      verifyPseudoToken(verificationCode, verificationUri, ticket);
                   });
               }
 
-              function verifyPseudoToken(verificationCode, verificationUri) {
+              function verifyPseudoToken(verificationCode, verificationUri, ticket) {
                   var xhr = new XMLHttpRequest();
                   xhr.onreadystatechange = function(){
                       if (this.readyState == XMLHttpRequest.DONE && this.status >= 200 < 400) {
                           const data = JSON.parse(xhr.responseText).data;
-                          console.log(data);
+                          const identifierToken = data.token;
                           // request webinar login
+                          requestWebinarAttendeeLoginUrlByIdentifierToken(identifierToken, ticket);
                       }
 
                       // handle when verification code is wrong
@@ -76,12 +77,32 @@ function updateWebinarBox(tabId) {
                   }));
               };
 
+              function requestWebinarAttendeeLoginUrlByIdentifierToken(identifierToken, ticket) {
+                  var xhr = new XMLHttpRequest();
+                  xhr.onreadystatechange = function(){
+                      if (this.readyState == XMLHttpRequest.DONE && this.status >= 200 < 400) {
+                          const data = JSON.parse(xhr.responseText).data;
+                          console.log(data); // must be webinar url
+                          //window.location = data.X;
+                      }
+
+                      // handle errors
+                  };
+
+                  xhr.open("POST", EVAND_API + '/webinars/login_url', true);
+                  xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                  xhr.setRequestHeader("Identifier-Token", identifierToken);
+                  xhr.send(JSON.stringify({
+                      'attendee_id': ticket
+                  }));
+              }
+
               function requestIdentifierToken(shadowRoot, identifier) {
                   var xhr = new XMLHttpRequest();
                   xhr.onreadystatechange = function(){
                       if (this.readyState == XMLHttpRequest.DONE && this.status >= 200 < 400) {
                           const data = JSON.parse(xhr.responseText).data;
-                          displayVerificationItems(shadowRoot, data._links.verification);
+                          displayVerificationItems(shadowRoot, data._links.verification, identifier);
                       }
                   };
 
