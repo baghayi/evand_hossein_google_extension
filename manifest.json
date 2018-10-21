@@ -9,7 +9,7 @@
         "scripts": [
             "tasks/DisplayTotalUnreadMessages.js",
             "tasks/StartingScreenSelector.js",
-            "tasks/EventWebinarLoginBox.js"
+            "tasks/EventWebinarLoginBox/BackgroundTask.js"
         ],
         "persistent": false
     },
