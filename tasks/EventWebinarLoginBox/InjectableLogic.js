@@ -60,7 +60,7 @@
                 const data = JSON.parse(xhr.responseText).data;
                 const identifierToken = data.token;
                 // request webinar login
-                requestWebinarAttendeeLoginUrlByIdentifierToken(identifierToken, ticket);
+                requestWebinarLoginURL(null, identifierToken, ticket);
             }
 
             // handle when verification code is wrong
@@ -73,7 +73,7 @@
         }));
     };
 
-    function requestWebinarAttendeeLoginUrlByIdentifierToken(identifierToken, ticket) {
+    function requestWebinarLoginURL(jwt, identifierToken, ticket) {
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function(){
             if (this.readyState == XMLHttpRequest.DONE && this.status >= 200 < 400) {
@@ -87,6 +87,8 @@
         xhr.open("POST", EVAND_API + '/webinars/login_url', true);
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xhr.setRequestHeader("Identifier-Token", identifierToken);
+        xhr.setRequestHeader("Authorization", jwt);
+
         xhr.send(JSON.stringify({
             'attendee_id': ticket
         }));
@@ -108,6 +110,7 @@
             'identifier_type': 'ticket'
         }));
     }
+
     let webinarBox = document.querySelector('div.event-location-webinar').parentNode.parentNode;
     if(webinarBox) {
         let shadowRoot = webinarBox.attachShadow({mode: "open"});
@@ -121,7 +124,15 @@
             const identifier = shadowRoot.getElementById('ticket-identifier');
             console.log('login as attendee');
 
-            requestIdentifierToken(shadowRoot, identifier.value);
+            // if jwt is available, send a request with JWT and ticket, if faced any access issues then fallback to identifier token
+            const cookies = document.cookie.split('; ').map(x => x.split('='))
+            let jwt = null;
+            cookies.forEach(x => x[0] == 'jwt' ? jwt = decodeURIComponent(x[1]) : '')
+            if(jwt != null) {
+                requestWebinarLoginURL(jwt, null, identifier.value);
+            }else {
+                requestIdentifierToken(shadowRoot, identifier.value);
+            }
         });
     }
 
