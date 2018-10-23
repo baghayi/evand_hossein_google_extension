@@ -4,7 +4,7 @@
               input#ticket-identifier {
                   padding: 5px;
                   margin-left: 5px;
-                  width: 50px;
+                  width: 80px;
               }
               input#goto-verification-step {
                   padding: 5px;
@@ -27,7 +27,10 @@
               <div class="webinar">
               <h3>ورودیه وبینار</h3>
               <div id="inputs">
-              <input type="text" placeholder="کد بلیت" id="ticket-identifier">
+              <input list="event-ordered-tickets" type="text" placeholder="کد بلیت" id="ticket-identifier">
+              <datalist id="event-ordered-tickets">
+              <option value="xyz">
+              </datalist>
               <input type="button" value="ورود" id="goto-verification-step">
               </div>
 
