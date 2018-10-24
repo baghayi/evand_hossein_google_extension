@@ -1,7 +1,7 @@
 const ticket = 'xyz123';
-function getTemplate(orderedTickets) {
-    const template = `
-        <style>
+function getTemplate(shadowRoot) {
+    return `
+       <style>
         input#ticket-identifier {
             padding: 5px;
                      margin-left: 5px;
@@ -30,8 +30,7 @@ function getTemplate(orderedTickets) {
         <div id="inputs">
         <input list="event-ordered-tickets" type="text" placeholder="کد بلیت" id="ticket-identifier">
         <datalist id="event-ordered-tickets">
-        ${orderedTickets}
-    <option value="${ticket}">
+            <option value="${ticket}" label="حسین بقایی (${ticket})">
         </datalist>
         <input type="button" value="ورود" id="goto-verification-step">
         </div>
@@ -40,18 +39,41 @@ function getTemplate(orderedTickets) {
         </div>
         `;
 
-    return template;
+    shadowRoot.addEventListener('DOMNodeInserted', function(e){
+        console.log(e);
+    });
+    var x = new MutationObserver(function (e) {
+        console.log(1);
+    });
+
+    x.observe(document.getElementById('event-ordered-tickets'), { childList: true });
+
+    /*
+     *orderedTickets(14685, function(options){
+     *});
+     */
 }
 
 function getJwt() {
-    const cookies = document.cookie.split('; ').map(x => x.split('=');
+    const cookies = document.cookie.split('; ').map(x => x.split('='));
     let jwt = null;
-    cookies.forEach(x => x[0] == 'jwt' ? jwt = decodeURIComponent(x[1]) : '')
+    cookies.forEach(x => x[0] == 'jwt' ? jwt = decodeURIComponent(x[1]) : '');
     return jwt;
 }
 
-function orderedTickets(eventId) {
-    fetch()
+function orderedTickets(eventId, passResultTo) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function(){
+        if (this.readyState == XMLHttpRequest.DONE && this.status >= 200 < 400) {
+            const data = JSON.parse(xhr.responseText).data;
+
+            passResultTo(data.map(a => `<option value="${a.id}">`));
+        }
+    };
+
+    xhr.open("POST", EVAND_API + '/users/me/attendees?event_id=' + eventId, true);
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send();
 }
 
 (function(event){
@@ -142,7 +164,7 @@ function orderedTickets(eventId) {
     let webinarBox = document.querySelector('div.event-location-webinar').parentNode.parentNode;
     if(webinarBox) {
         let shadowRoot = webinarBox.attachShadow({mode: "open"});
-        shadowRoot.innerHTML = template(orderedTickets(14685));
+        shadowRoot.innerHTML = getTemplate(shadowRoot);
 
         shadowRoot.querySelector('p#webinar-login-as-organizer > a').addEventListener('click', function(e){
             console.log('login as organizer');
@@ -154,11 +176,11 @@ function orderedTickets(eventId) {
 
             // if jwt is available, send a request with JWT and ticket, if faced any access issues then fallback to identifier token
             const jwt = getJwt();
-                if(jwt != null) {
-                    requestWebinarLoginURL(jwt, null, identifier.value, shadowRoot);
-                }else {
-                    requestIdentifierToken(shadowRoot, identifier.value);
-                }
+            if(jwt != null) {
+                requestWebinarLoginURL(jwt, null, identifier.value, shadowRoot);
+            }else {
+                requestIdentifierToken(shadowRoot, identifier.value);
+            }
         });
     }
 
