@@ -1,4 +1,15 @@
+
+let injectedWebinarLoginBox = false;
+document.addEventListener('scroll', function(){
+    if(injectedWebinarLoginBox) return;
+
+    injectLoginBox();
+    injectedWebinarLoginBox = true;
+});
+
+
 const ticket = 'xyz123';
+
 function getTemplate(shadowRoot) {
     return `
        <style>
@@ -76,7 +87,9 @@ function orderedTickets(eventId, passResultTo) {
     xhr.send();
 }
 
-(function(event){
+
+
+function injectLoginBox(event){
 
     const EVAND_API = 'https://api.evand.com';
 
@@ -184,4 +197,4 @@ function orderedTickets(eventId, passResultTo) {
         });
     }
 
-})();
+};
