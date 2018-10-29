@@ -1,16 +1,42 @@
+const EVAND_API = 'https://api.evand.com';
 
 let injectedWebinarLoginBox = false;
-document.addEventListener('scroll', function(){
+
+document.addEventListener('scroll', async function(){
     if(injectedWebinarLoginBox) return;
 
-    injectLoginBox();
     injectedWebinarLoginBox = true;
+    const event = await getEventBySlug(eventSlug());
+    const tickets = await getOrderedTickets(event.id).catch(r => console.log('failed fethcing user tickets'));
+    injectLoginBox(event, tickets);
 });
+
+function eventSlug() {
+    let pieces = window.location.pathname.split("/");
+    if(pieces.length >= 3 && pieces[1] === 'events') {
+        return pieces[2];
+    }
+
+    return null;
+}
 
 
 const ticket = 'xyz123';
 
-function getTemplate(shadowRoot) {
+function getEventBySlug(eventSlug) {
+    return fetch(EVAND_API + '/events/' + eventSlug)
+        .then(function(response){
+            if(response.status >= 200 && response.status < 300) {
+                return Promise.resolve(response);
+            }else {
+                return Promise.reject(new Error(response.statusText));
+            }
+        })
+    .then(r => r.json())
+    .then(r => r.data);
+}
+
+function getTemplate(shadowRoot, tickets) {
     return `
        <style>
         input#ticket-identifier {
@@ -41,7 +67,7 @@ function getTemplate(shadowRoot) {
         <div id="inputs">
         <input list="event-ordered-tickets" type="text" placeholder="کد بلیت" id="ticket-identifier">
         <datalist id="event-ordered-tickets">
-            <option value="${ticket}" label="حسین بقایی (${ticket})">
+            ${tickets}
         </datalist>
         <input type="button" value="ورود" id="goto-verification-step">
         </div>
@@ -50,19 +76,16 @@ function getTemplate(shadowRoot) {
         </div>
         `;
 
-    shadowRoot.addEventListener('DOMNodeInserted', function(e){
-        console.log(e);
-    });
-    var x = new MutationObserver(function (e) {
-        console.log(1);
-    });
-
-    x.observe(document.getElementById('event-ordered-tickets'), { childList: true });
-
-    /*
-     *orderedTickets(14685, function(options){
-     *});
-     */
+/*
+ *    shadowRoot.addEventListener('DOMNodeInserted', function(e){
+ *        console.log(e);
+ *    });
+ *    var x = new MutationObserver(function (e) {
+ *        console.log(1);
+ *    });
+ *
+ *    x.observe(document.getElementById('event-ordered-tickets'), { childList: true });
+ */
 }
 
 function getJwt() {
@@ -72,27 +95,26 @@ function getJwt() {
     return jwt;
 }
 
-function orderedTickets(eventId, passResultTo) {
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function(){
-        if (this.readyState == XMLHttpRequest.DONE && this.status >= 200 < 400) {
-            const data = JSON.parse(xhr.responseText).data;
-
-            passResultTo(data.map(a => `<option value="${a.id}">`));
+function getOrderedTickets(eventId) {
+    return fetch(EVAND_API + '/users/me/attendees?per_page=20&event_id=' + eventId, {
+        headers: {
+            "Authorization": getJwt()
         }
-    };
-
-    xhr.open("POST", EVAND_API + '/users/me/attendees?event_id=' + eventId, true);
-    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhr.send();
+    })
+        .then(function(response){
+            if(response.status >= 200 && response.status < 300) {
+                return Promise.resolve(response);
+            }else {
+                return Promise.reject(new Error(response.statusText));
+            }
+        })
+    .then(r => r.json())
+    .then(r => r.data.map(a => `<option value="${a.id}" label="(${a.id}) ${a.first_name} ${a.last_name}">`).join(''));
 }
 
 
 
-function injectLoginBox(event){
-
-    const EVAND_API = 'https://api.evand.com';
-
+function injectLoginBox(event, tickets){
     function displayVerificationItems(shadowRoot, verificationUri, ticket) {
         const html = `
             <input type="text" placeholder="کد تاییدیه" id="verification-code">
@@ -177,7 +199,7 @@ function injectLoginBox(event){
     let webinarBox = document.querySelector('div.event-location-webinar').parentNode.parentNode;
     if(webinarBox) {
         let shadowRoot = webinarBox.attachShadow({mode: "open"});
-        shadowRoot.innerHTML = getTemplate(shadowRoot);
+        shadowRoot.innerHTML = getTemplate(shadowRoot, tickets);
 
         shadowRoot.querySelector('p#webinar-login-as-organizer > a').addEventListener('click', function(e){
             console.log('login as organizer');
