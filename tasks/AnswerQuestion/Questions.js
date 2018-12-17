@@ -18,8 +18,8 @@ export class EventStatistics extends AnswerQuestion {
     constructor() {
         super();
         this.questions = [
-            {label: "Total Attendees", findAnswer: (data) => data.attendees.all.count + " of " + data.tickets.all.count, order: 4},
-            {label: "Total Guest Attendees", findAnswer: (data) => data.attendees.guest.count, order: 5}
+            {label: "Total Attendees", findAnswer: (data) => data.attendees.all.count + " of " + data.tickets.all.count, order: 5},
+            {label: "Total Guest Attendees", findAnswer: (data) => data.attendees.guest.count, order: 6}
         ];
 
     }
