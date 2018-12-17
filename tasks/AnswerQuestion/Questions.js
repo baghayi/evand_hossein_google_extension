@@ -7,7 +7,8 @@ export class Event extends AnswerQuestion {
             {label: "Event Id", findAnswer: (object) => object.id, order: 1},
             {label: "Has Active Webinar", findAnswer: (object) => object._links.webinar != null, order: 2},
             //{label: "Has Connect-App", findAnswer: (object) => object.connectApp != undefined },
-            {label: "Is Using Showtime", findAnswer: (object) => object.is_using_showtime && true, order: 3}
+            {label: "Is Using Showtime", findAnswer: (object) => object.is_using_showtime && true, order: 3},
+            {label: "Cancelled?", findAnswer: (object) => object.cancelled, order: 4}
         ];
     }
 }
