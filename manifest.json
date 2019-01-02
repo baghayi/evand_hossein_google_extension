@@ -17,7 +17,8 @@
     "commands": {
         "_execute_browser_action": {
             "suggested_key": {
-                "linux": "Alt+C"
+                "linux": "Alt+C",
+                "windows": "Alt+C"
             }
         }
     }
