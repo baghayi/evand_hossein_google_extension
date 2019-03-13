@@ -50,6 +50,10 @@ function run (jwt, tabUrl) {
         gotoPage('EventTags', jwt);
     });
 
+    document.getElementById('who-am-i').addEventListener('click', function(e){
+        gotoPage('WhoAmI', jwt);
+    });
+
 }
 
 
