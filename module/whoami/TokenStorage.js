@@ -10,11 +10,10 @@ export class TokenStorage
     }
 
     // @todo move logic out or main class into whoami module.
-    async saveCurrentUserToken(main) {
+    async saveCurrentUserToken(token) {
         const savedToken = await this.getSavedUserToken();
 
         if(savedToken == null) {
-            const token = await main.getEvandUserJWTToken();
             chrome.storage.sync.set({ whoami_evand_com_user_original_jwt_token : token });
         }
     }
@@ -26,5 +25,9 @@ export class TokenStorage
                 result => result.whoami_evand_com_user_original_jwt_token ? resolve(true) : resolve(false)
             );
         });
+    }
+
+    clearStoredToken() {
+        chrome.storage.sync.remove(['whoami_evand_com_user_original_jwt_token']);
     }
 }

@@ -32,9 +32,9 @@ export class Config {
                         .then(r => r.status == 201 ? Promise.resolve(r) : Promise.reject(new Error(r.statusText)))
                         .then(r => r.json());
 
-                    tokenStorage.saveCurrentUserToken(main);
+                    const tokenInUse = await main.getEvandUserJWTToken();
+                    tokenStorage.saveCurrentUserToken(tokenInUse);
                     main.changeEvandUserJwtTokenTo(token.token_type + ' ' + token.access_token);
-                    console.log(this.eventBus);
                     eventBus.$emit('whoamiTokenChanged');
 
                     // @todo only refresh if user has evand.com open
