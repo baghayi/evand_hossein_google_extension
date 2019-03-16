@@ -20,6 +20,9 @@ div#app input {
         <button id="homepage">خونه پدری</button>
         <br />
         <div id="app">
+            <whoami-status 
+                ></whoami-status>
+
             <input v-model="someone" placeholder="می خوای در شکل چه کسی ظاهر بشی؟" v-on:keyup.enter="SearchForSomeone">
 
             <user
@@ -29,7 +32,8 @@ div#app input {
             ></user>
         </div>
 
-    <script src="../libs/vue.min.js"></script>
-    <script type="module" src="../tasks/whoami.js"></script>
+    <script src="../../../libs/vue.min.js"></script>
+    <script src="../../../libs/vue-async-computed.js"></script>
+    <script type="module" src="../main.js"></script>
     </body>
 </html>

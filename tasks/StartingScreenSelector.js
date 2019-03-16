@@ -34,8 +34,8 @@ function loadProperPopup(jwt, page) {
             loadView('views/event-tags.html');
             break;
 
-        case 'WhoAmI':
-            loadView('views/whoami.html');
+        case 'whoami':
+            loadView('module/whoami/view/index.html');
             break;
     }
 }

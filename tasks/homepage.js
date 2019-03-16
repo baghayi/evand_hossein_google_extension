@@ -51,7 +51,7 @@ function run (jwt, tabUrl) {
     });
 
     document.getElementById('who-am-i').addEventListener('click', function(e){
-        gotoPage('WhoAmI', jwt);
+        gotoPage('whoami', jwt);
     });
 
 }
