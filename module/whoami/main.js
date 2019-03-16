@@ -14,7 +14,7 @@ main.run(function(jwt, tabUrl){
 
     Vue.use(AsyncComputed);
     Vue.component('whoami-status', (new WhoamiStatusConfig(eventBus, tokenStorage, cookies, main)).getConfig());
-    Vue.component('user', (new UserConfig(eventBus, tokenStorage)).getConfig(main, jwt));
+    Vue.component('user', (new UserConfig(eventBus, tokenStorage, cookies)).getConfig(main, jwt));
     var app = new Vue((new MainConfig).getConfig(jwt));
 
 

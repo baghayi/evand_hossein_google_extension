@@ -15,4 +15,14 @@ export class Cookie {
             "expirationDate": nextMonth.getTime()
         });
     }
+
+    getTokenInUse() {
+        return new Promise(function(resolve, reject){
+            chrome.cookies.get(
+                {"url": "https://evand.com", "name": "jwt"},
+                cookie => cookie == null ? reject('You must be a guest!') : resolve(decodeURI(cookie.value))
+            );
+        });
+    }
+
 }
