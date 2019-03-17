@@ -13,9 +13,11 @@ const main = new Main();
 main.run(function(jwt, tabUrl){
 
     Vue.use(AsyncComputed);
-    Vue.component('whoami-status', (new WhoamiStatusConfig(eventBus, tokenStorage, cookies, main)).getConfig());
-    Vue.component('user', (new UserConfig(eventBus, tokenStorage, cookies)).getConfig(main, jwt));
+    Vue.component('whoami-status', (new WhoamiStatusConfig(eventBus, tokenStorage, cookies)).getConfig());
+    Vue.component('user', (new UserConfig(eventBus, tokenStorage, cookies)).getConfig(jwt));
     var app = new Vue((new MainConfig).getConfig(jwt));
+
+    eventBus.$on('EvandPageRefreshRequired', refreshEvandPageListener);
 
 
     document.getElementById('homepage').addEventListener('click', function(){
@@ -23,5 +25,6 @@ main.run(function(jwt, tabUrl){
     });
 });
 
-
-
+const refreshEvandPageListener = function() {
+    main.refreshTab();
+}

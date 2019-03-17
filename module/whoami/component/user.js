@@ -7,7 +7,7 @@ export class Config {
         this.cookies = cookies;
     }
 
-    getConfig(main, jwt) {
+    getConfig(jwt) {
         let eventBus = this.eventBus;
         let tokenStorage = this.tokenStorage;
         let cookies = this.cookies;
@@ -38,10 +38,7 @@ export class Config {
                     tokenStorage.saveCurrentUserToken(tokenInUse);
                     cookies.useToken(token.token_type + ' ' + token.access_token);
                     eventBus.$emit('whoamiTokenChanged');
-
-                    // @todo only refresh if user has evand.com open
-                    // @todo open evand.com when user is on a different page
-                    main.refreshTab();
+                    eventBus.$emit('EvandPageRefreshRequired');
                 }
             }
         };
