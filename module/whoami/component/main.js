@@ -1,5 +1,6 @@
 import {Config as UserConfig} from './user.js';
 import {Config as WhoamiStatusConfig} from './whoami-status.js';
+import {Config as HomepageButtonConfig} from './homepage-button.js';
 import { TokenStorage } from './../TokenStorage.js';
 import { Cookie } from './../Cookie.js';
 
@@ -23,7 +24,8 @@ export class Config
             },
             components: {
                 'whoami-status': (new WhoamiStatusConfig(eventBus, tokenStorage, cookies)).getConfig(),
-                'user': (new UserConfig(eventBus, tokenStorage, cookies)).getConfig(jwt)
+                'user': (new UserConfig(eventBus, tokenStorage, cookies)).getConfig(jwt),
+                'homepage-button': new HomepageButtonConfig()
             },
             methods: {
                 SearchForSomeone: async function() {

@@ -1,9 +1,16 @@
 
 export class Main {
 
+    //# refactor to use getJWT instead
     retrieveJWT(then) {
         chrome.storage.sync.get(['status'], function(result){
             then(result.status.jwt);
+        });
+    }
+
+    getJWT() {
+        return new Promise(function(resolve, reject){
+            chrome.storage.sync.get(['status'], result => result.status.jwt ? resolve(result.status.jwt) : resolve(null));
         });
     }
 
@@ -36,4 +43,5 @@ export class Main {
     refreshTab() {
         chrome.tabs.reload();
     }
+
 }
