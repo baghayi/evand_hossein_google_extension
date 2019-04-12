@@ -1,5 +1,6 @@
 import { Main } from '../../services/Main.js';
 import {Config as MainConfig} from './component/main.js';
+import {Route} from '../../services/Route.js';
 
 let eventBus = new Vue({});
 
@@ -11,6 +12,12 @@ main.run(function(jwt, tabUrl){
     eventBus.$on('EvandPageRefreshRequired', refreshEvandPageListener);
 });
 
-const refreshEvandPageListener = function() {
-    main.refreshTab();
+const refreshEvandPageListener = async function() {
+    const route = new Route();
+    const isEvandPage = await route.isEvandPage();
+
+    if (isEvandPage)
+        main.refreshTab();
+    else
+        route.openEvandHomepage();
 }
