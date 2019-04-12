@@ -17,7 +17,7 @@ const refreshEvandPageListener = async function() {
     const isEvandPage = await route.isEvandPage();
 
     if (isEvandPage)
-        main.refreshTab();
+        route.refreshTab();
     else
         route.openEvandHomepage();
 }

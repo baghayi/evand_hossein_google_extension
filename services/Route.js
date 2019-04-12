@@ -16,4 +16,8 @@ export class Route
     openEvandHomepage() {
         chrome.tabs.create({ url: 'https://evand.com' });
     }
+
+    refreshTab() {
+        chrome.tabs.reload();
+    }
 }
