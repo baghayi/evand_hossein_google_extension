@@ -14,9 +14,8 @@ main.run(function(jwt, tabUrl){
 
 const refreshEvandPageListener = async function() {
     const route = new Route();
-    const isEvandPage = await route.isEvandPage();
 
-    if (isEvandPage)
+    if (await route.isEvandPage())
         route.refreshTab();
     else
         route.openEvandHomepage();
