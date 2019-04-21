@@ -33,6 +33,10 @@ function loadProperPopup(jwt, page) {
         case 'EventTags':
             loadView('views/event-tags.html');
             break;
+
+        case 'whoami':
+            loadView('module/whoami/view/index.html');
+            break;
     }
 }
 

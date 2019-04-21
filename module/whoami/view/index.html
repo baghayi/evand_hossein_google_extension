@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+        <style>
+html {
+    direction: rtl;
+}
+body {
+    width: 300px;
+}
+
+div#app input {
+    margin-top: 5px;
+    width: 100%;
+}
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <homepage-button></homepage-button>
+            <whoami-status 
+                ></whoami-status>
+
+            <input v-model="someone" placeholder="می خوای در شکل چه کسی ظاهر بشی؟" v-on:keyup.enter="SearchForSomeone">
+
+            <user
+                v-for="user in users"
+                v-bind:user="user"
+                v-bind:key="user.id"
+            ></user>
+        </div>
+
+    <script src="../../../libs/vue.min.js"></script>
+    <script src="../../../libs/vue-async-computed.js"></script>
+    <script type="module" src="../main.js"></script>
+    </body>
+</html>
