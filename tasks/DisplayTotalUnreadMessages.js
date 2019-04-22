@@ -29,9 +29,9 @@ setInterval(function(){
         if(jwt) {
             fetchTotalUnreadUserMessages(jwt)
                 .then(function(totalUnreadMessages){
-                    chrome.browserAction.setBadgeText({
-                        text: totalUnreadMessages.toString()
-                    });
+                    if (totalUnreadMessages == 0)
+                        return chrome.browserAction.setBadgeText({ text: '' });
+                    chrome.browserAction.setBadgeText({ text: totalUnreadMessages.toString() });
                 });
         }
     });
