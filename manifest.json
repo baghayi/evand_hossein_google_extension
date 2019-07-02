@@ -18,7 +18,8 @@
         "_execute_browser_action": {
             "suggested_key": {
                 "linux": "Alt+C",
-                "windows": "Alt+C"
+                "windows": "Alt+C",
+                "mac": "Command+Shift+C"
             }
         }
     },
