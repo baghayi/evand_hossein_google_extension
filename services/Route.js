@@ -17,6 +17,10 @@ export class Route
         chrome.tabs.create({ url: 'https://evand.com' });
     }
 
+    openWebsite(pageURL) {
+        chrome.tabs.create({ url: pageURL});
+    }
+
     refreshTab() {
         chrome.tabs.reload();
     }
