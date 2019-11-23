@@ -1,6 +1,6 @@
 {
     "name": "Evand Hossein",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "description": "This extension is supposed to make Hossein's life much much easier.",
     "permissions": ["https://api.evand.com/", "tabs", "storage", "https://evand.com/", "*://evand.com/", "cookies"],
     "browser_action": {
